@@ -66,7 +66,7 @@ All values below are measured on the same untouched 885-row test set. Precision,
 
 ## Streamlit Application
 
-**Live application:** Pending deployment in Phase 6.
+**Live application:** [student-outcome-model-lab.streamlit.app](https://student-outcome-model-lab.streamlit.app/)
 
 The application includes:
 
