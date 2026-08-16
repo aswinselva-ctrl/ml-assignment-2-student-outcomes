@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+.streamlit/secrets.toml
+ML_Assignment_2.pdf
+How to do this Assignment.rtf
