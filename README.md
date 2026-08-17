@@ -122,16 +122,14 @@ python -m model.train_models
 ## BITS Virtual Lab Execution
 
 ```bash
-sudo dnf install -y git
-git clone https://github.com/aswinselva-ctrl/ml-assignment-2-student-outcomes.git
-cd ml-assignment-2-student-outcomes
-python3 -m venv .venv
-source .venv/bin/activate
+python -c "import urllib.request; urllib.request.urlretrieve('https://github.com/aswinselva-ctrl/ml-assignment-2-student-outcomes/archive/refs/heads/main.zip', 'project.zip')"
+python -m zipfile -e project.zip .
+cd ml-assignment-2-student-outcomes-main
 python -m pip install -r requirements.txt
-streamlit run app.py
+python -m streamlit run app.py --server.address 0.0.0.0
 ```
 
-Open the displayed localhost URL in the BITS Lab browser. Keep PyCharm and the running application visible side by side and capture one screenshot for the submission PDF.
+Open the displayed localhost URL in the BITS Lab browser. Keep VS Code and the running application visible side by side and capture one screenshot for the submission PDF. The ZIP workflow is used because Git may not be installed in the Virtual Lab image.
 
 ## Streamlit Community Cloud Deployment
 
