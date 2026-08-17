@@ -31,6 +31,62 @@ MODEL_FILES = {
     "Random Forest": "random_forest.joblib",
     "Support Vector Machine": "support_vector_machine.joblib",
 }
+PERFORMANCE_OBSERVATIONS = [
+    {
+        "ML Model Name": "Logistic Regression",
+        "Observation about model performance": (
+            "Best overall model. It achieved the highest Accuracy (0.771), weighted "
+            "F1 (0.759), and MCC (0.619). Its Enrolled recall was 0.390, showing that "
+            "the minority class remains the hardest outcome to identify."
+        ),
+    },
+    {
+        "ML Model Name": "Decision Tree",
+        "Observation about model performance": (
+            "Lower generalization than the leading models, with 0.663 Accuracy and "
+            "0.459 MCC. It recovered 35.8% of Enrolled students but made more errors "
+            "across all three classes."
+        ),
+    },
+    {
+        "ML Model Name": "kNN",
+        "Observation about model performance": (
+            "Moderate performance with 0.696 Accuracy and 0.680 weighted F1. Its "
+            "Enrolled recall was only 0.277, while Graduate recall was much stronger "
+            "at 0.887."
+        ),
+    },
+    {
+        "ML Model Name": "Naive Bayes",
+        "Observation about model performance": (
+            "Weakest overall result, with 0.244 Accuracy and 0.124 MCC. It identified "
+            "96.2% of Enrolled cases but only 1.1% of Graduate cases, indicating that "
+            "its independence assumptions are unsuitable for these related features."
+        ),
+    },
+    {
+        "ML Model Name": "Random Forest (Ensemble)",
+        "Observation about model performance": (
+            "Best AUC (0.904) and strong Dropout and Graduate recall (0.768 and "
+            "0.941). Its low Enrolled recall (0.245) reduced weighted F1 to 0.735."
+        ),
+    },
+    {
+        "ML Model Name": "Support Vector Machine",
+        "Observation about model performance": (
+            "Competitive second-tier result with 0.764 Accuracy, 0.751 weighted F1, "
+            "and 0.608 MCC. It was close to Logistic Regression but had a lower AUC "
+            "and slightly lower Enrolled recall."
+        ),
+    },
+    {
+        "ML Model Name": "Overall winner",
+        "Observation about model performance": (
+            "Logistic Regression, because it leads Accuracy, weighted F1, and MCC. "
+            "Random Forest is the strongest alternative when AUC is the priority."
+        ),
+    },
+]
 
 
 st.set_page_config(
@@ -288,8 +344,13 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-selected_tab, overview_tab, predictions_tab = st.tabs(
-    ["Selected model", "Model comparison", "Predictions"]
+selected_tab, overview_tab, observations_tab, predictions_tab = st.tabs(
+    [
+        "Selected model",
+        "Model comparison",
+        "Performance observations",
+        "Predictions",
+    ]
 )
 
 with overview_tab:
@@ -301,6 +362,11 @@ with overview_tab:
         ),
         width="stretch",
     )
+
+with observations_tab:
+    st.subheader("Observations on model performance")
+    st.caption("Results are based on the same untouched 885-row test set.")
+    st.table(pd.DataFrame(PERFORMANCE_OBSERVATIONS).set_index("ML Model Name"))
 
 with selected_tab:
     st.subheader(selected_model)
