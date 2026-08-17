@@ -203,8 +203,18 @@ def prepare_data(data: pd.DataFrame, model):
     expected_features = list(model.feature_names_in_)
     missing_features = sorted(set(expected_features) - set(normalized.columns))
 
+    if normalized.empty:
+        raise ValueError("The uploaded CSV contains no data rows.")
+    if normalized.columns.duplicated().any():
+        duplicate_columns = normalized.columns[normalized.columns.duplicated()].tolist()
+        raise ValueError("Duplicate columns: " + ", ".join(duplicate_columns))
     if missing_features:
         raise ValueError("Missing required columns: " + ", ".join(missing_features))
+    missing_cells = int(normalized[expected_features].isna().sum().sum())
+    if missing_cells:
+        raise ValueError(
+            f"The uploaded CSV contains {missing_cells} missing feature value(s)."
+        )
 
     features = normalized[expected_features]
     target = normalized[TARGET_COLUMN] if TARGET_COLUMN in normalized else None
@@ -257,8 +267,15 @@ except (ValueError, pd.errors.ParserError, UnicodeDecodeError) as error:
     st.error(str(error))
     st.stop()
 
-predictions = model.predict(features)
-probabilities = model.predict_proba(features)
+try:
+    predictions = model.predict(features)
+    probabilities = model.predict_proba(features)
+except (TypeError, ValueError):
+    st.error(
+        "The uploaded CSV contains feature values that are incompatible with "
+        "the trained model. Check the column data types and values."
+    )
+    st.stop()
 classes = model.classes_
 
 data_name = uploaded_file.name if uploaded_file is not None else TEST_DATA_PATH.name
