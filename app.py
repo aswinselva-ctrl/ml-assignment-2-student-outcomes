@@ -194,10 +194,13 @@ probabilities = model.predict_proba(features)
 classes = model.classes_
 
 source_label = "Uploaded test data" if uploaded_file is not None else "Bundled test data"
-st.caption(f"{source_label} | {len(features):,} rows | {len(features.columns)} features")
+st.caption(
+    f"{source_label} | {len(features):,} rows | {len(features.columns)} features"
+    f" | Active model: {selected_model}"
+)
 
-overview_tab, selected_tab, predictions_tab = st.tabs(
-    ["Model comparison", "Selected model", "Predictions"]
+selected_tab, overview_tab, predictions_tab = st.tabs(
+    ["Selected model", "Model comparison", "Predictions"]
 )
 
 with overview_tab:
