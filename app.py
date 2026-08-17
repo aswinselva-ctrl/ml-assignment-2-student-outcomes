@@ -1,4 +1,5 @@
 from pathlib import Path
+from html import escape
 
 import joblib
 import matplotlib.pyplot as plt
@@ -45,11 +46,13 @@ st.markdown(
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,600&display=swap');
 
     :root {
-        --ink: #172421;
-        --forest: #175b4d;
-        --coral: #c85d3f;
-        --mist: #eef4f1;
-        --line: #cad8d2;
+        --ink: #18332d;
+        --forest: #146354;
+        --deep-forest: #103f37;
+        --coral: #c65338;
+        --mist: #e8f2ee;
+        --paper: #fbfdfc;
+        --line: #bed2ca;
     }
     html, body, [class*="st-"] { font-family: "DM Sans", sans-serif; }
     [data-testid="stIconMaterial"] {
@@ -58,19 +61,63 @@ st.markdown(
     h1, h2, h3 { color: var(--ink); letter-spacing: 0; }
     h1 { font-family: "Newsreader", serif; font-size: 2.15rem !important; }
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(140deg, #f7faf8 0%, #edf5f1 55%, #f8f4f1 100%);
+        background-color: #f4f7f5;
+        background-image:
+            linear-gradient(rgba(20, 99, 84, 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(20, 99, 84, 0.035) 1px, transparent 1px),
+            linear-gradient(135deg, #f8fbf9 0%, #edf4f1 58%, #f8f2ef 100%);
+        background-size: 32px 32px, 32px 32px, 100% 100%;
     }
-    [data-testid="stSidebar"] { background: #173f35; }
-    [data-testid="stSidebar"] * { color: #f5faf7; }
-    [data-testid="stSidebar"] [data-baseweb="select"] * { color: var(--ink); }
-    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] {
-        background: #245447;
-        border-color: #6e9b8f;
+    [data-testid="stSidebar"] {
+        background: var(--deep-forest);
+        border-right: 1px solid #2f6a5f;
+    }
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+        color: #f7fbf9 !important;
+    }
+    [data-testid="stSidebar"] h3 {
+        border-bottom: 2px solid #e28b72;
+        padding-bottom: 0.75rem;
+    }
+    [data-testid="stSidebar"] [role="group"]:has([role="combobox"]) {
+        background: var(--paper);
+        border: 2px solid #79ad9f;
         border-radius: 6px;
+        box-shadow: 0 5px 16px rgba(5, 29, 24, 0.2);
     }
-    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button,
-    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button * {
+    [data-testid="stSidebar"] [role="combobox"] {
         color: var(--ink) !important;
+        -webkit-text-fill-color: var(--ink) !important;
+        font-weight: 700;
+    }
+    [data-testid="stSidebar"] button[aria-label="Open"] {
+        color: var(--forest) !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] {
+        background: var(--mist);
+        border: 2px dashed #79ad9f;
+        border-radius: 6px;
+        padding: 0.75rem;
+    }
+    [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] * {
+        color: var(--ink) !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stFileChip"] {
+        background: var(--paper);
+        border: 1px solid #a8c7bd;
+        box-shadow: 0 3px 10px rgba(16, 63, 55, 0.12);
+    }
+    [data-testid="stSidebar"] [data-testid="stFileChipName"] {
+        color: var(--ink) !important;
+        font-weight: 700;
+    }
+    [data-testid="stSidebar"] [data-testid="stFileChipDeleteBtn"] button {
+        color: var(--coral) !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+        color: #b8d6cd !important;
     }
     div[data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) {
         display: grid;
@@ -82,18 +129,39 @@ st.markdown(
         min-width: 0;
     }
     [data-testid="stMetric"] {
-        background: rgba(255, 255, 255, 0.72);
+        background: rgba(255, 255, 255, 0.9);
         border: 1px solid var(--line);
         border-top: 3px solid var(--forest);
         border-radius: 6px;
         padding: 0.85rem 1rem;
+        box-shadow: 0 7px 20px rgba(24, 51, 45, 0.07);
     }
     [data-testid="stMetricValue"] { color: var(--forest); }
     .dataset-strip {
         border-left: 4px solid var(--coral);
-        padding: 0.35rem 0 0.35rem 0.9rem;
+        background: rgba(255, 255, 255, 0.68);
+        padding: 0.55rem 0.9rem;
         margin: 0.2rem 0 1.4rem;
         color: #42514d;
+    }
+    .run-context {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        background: var(--deep-forest);
+        color: #f7fbf9;
+        border-left: 5px solid var(--coral);
+        padding: 0.8rem 1rem;
+        margin: 0 0 1.2rem;
+        box-shadow: 0 8px 22px rgba(16, 63, 55, 0.14);
+    }
+    .run-context strong { color: #ffd8cc; }
+    [role="tab"][aria-selected="true"] {
+        color: var(--forest) !important;
+        border-bottom-color: var(--coral) !important;
+        font-weight: 700;
     }
     .block-container { max-width: 1220px; padding-top: 2.5rem; }
     div[data-testid="stDataFrame"] { border: 1px solid var(--line); border-radius: 6px; }
@@ -193,10 +261,14 @@ predictions = model.predict(features)
 probabilities = model.predict_proba(features)
 classes = model.classes_
 
-source_label = "Uploaded test data" if uploaded_file is not None else "Bundled test data"
-st.caption(
-    f"{source_label} | {len(features):,} rows | {len(features.columns)} features"
-    f" | Active model: {selected_model}"
+data_name = uploaded_file.name if uploaded_file is not None else TEST_DATA_PATH.name
+st.markdown(
+    '<div class="run-context">'
+    f'<span><strong>Data</strong> {escape(data_name)} &middot; '
+    f'{len(features):,} rows &middot; {len(features.columns)} features</span>'
+    f'<span><strong>Active model</strong> {escape(selected_model)}</span>'
+    "</div>",
+    unsafe_allow_html=True,
 )
 
 selected_tab, overview_tab, predictions_tab = st.tabs(
